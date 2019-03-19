@@ -12,8 +12,8 @@ username='xygmg4xlqx8s9rmmckq005xvj'
 
 
 #labels
-['happyness',
-'sadness',
+['happy',
+'sad',
 'rage',
 'relax']
 
@@ -56,11 +56,9 @@ user = spobject.current_user()
 
 #print(spobject._get('me/player/currently-playing')["item"])
 
+#definizioni di funzioni
 
-
-
-
-
+#scrive il file txt con vettore audio features, id canzone per ogni canzone nel vettore tracks
 def write_tracks(text_file, tracks):
     with open(text_file, 'a+',encoding="utf-8") as file_out:
         while True:
@@ -70,7 +68,7 @@ def write_tracks(text_file, tracks):
                 else:
                     track = item
                 try:
-                    track_name= track['name']
+                    #track_name= track['name']
                     track_id = track['id']
                     track_analyzed=analysis_track(track_id)
                     #file_out.write(track_id+' '+str(track_analyzed)+' '+track_name+ '\n')
@@ -84,6 +82,7 @@ def write_tracks(text_file, tracks):
             else:
                 break
 
+#prende come input una playlist e richiama write tracks con la lista delle canzoni della playlist
 def write_playlist(text_name,username, playlist_id):
     results = spobject.user_playlist(username, playlist_id,fields='tracks,next,name')
     text_file=text_name+'.txt'
@@ -92,6 +91,7 @@ def write_playlist(text_name,username, playlist_id):
     tracks = results['tracks']
     write_tracks(text_file, tracks)
 
+#data una canzone ritorna il vettore delle audio features per quella canzone
 def analysis_track(track_id):
      audio_features = spobject.audio_features(track_id)
         
@@ -103,12 +103,6 @@ def analysis_track(track_id):
  
      return afv
     
-
-
-
-
-
-
 
 
 # Informazioni utente
@@ -124,7 +118,7 @@ while True:
     print("0 - Esci.")
     print("1 - Cerca artista.")
     print("2 - Mostra ultimi brani ascoltati.")
-    print("3 - Cerca playlist.")
+    print("3 - Cerca playlist e crea nuovo dataset.")
     print()
     scelta = input("Cosa vuoi fare? ")
 
@@ -154,12 +148,12 @@ while True:
             print(item["played_at"], item["track"]["name"])
         #print(json.dumps(rplayed, sort_keys=True, indent=4))
 
-    # Ricerca playlist
+    # Ricerca playlist e crea dataset
     if scelta == "3":
         print()
         
         print()
-        list_mood=['happyness','sadness','rage','relax'] 
+        list_mood=['happy','sad','rage','relax'] #lista dei mood da analizzare
         for i, m in enumerate(list_mood):
             print(i, '-', m)
         print()
@@ -169,7 +163,7 @@ while True:
         print()
 
         # Ottieni risultati
-        limit=10
+        limit=10 #quante paylist vuoi che mostri
         sresult = spobject.search(richiesta, limit, 0, 'playlist')
         #print(json.dumps(sresult, sort_keys=True, indent=3))
         
@@ -178,7 +172,6 @@ while True:
 
         for i, playlist in enumerate(lista_playlist):
             print(f'{i}. ' + playlist['name'] + ', Total tracks: ' + str(playlist['tracks']['total']) + ' ' + playlist['id'])
-        
         i=0
         while i<limit:
             print('\n se vuoi tornare al menu principale inserisci q')
@@ -198,6 +191,3 @@ while True:
         for tr in tracks:
             print(tr['track']['artists'][0]['name'] + " - " + tr['track']['name'])
         '''
-
-
-        #print(lista_playlist)
