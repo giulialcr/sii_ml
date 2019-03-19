@@ -3,13 +3,14 @@ from keras.models import Sequential
 from keras.layers import Dense, Dropout, Activation
 from keras.optimizers import SGD
 from keras.utils import to_categorical, normalize
+from os import sep # Il separatore per i path nel sistema operativo corrente 
 import readmatrix as rdmt
 
 # Carica i dati e crea il dataset
 import numpy as np
 # Lettura da file a matrice
-mat_happy = rdmt.to_matrix('data\\happyness.txt', 0, 600)
-mat_sadness = rdmt.to_matrix('data\\sadness.txt', 1, 600)
+mat_happy = rdmt.to_matrix('data' + sep + 'happyness.txt', 0, 600)
+mat_sadness = rdmt.to_matrix('data' + sep + 'sadness.txt', 1, 600)
 dataset = np.append(mat_sadness, mat_happy, axis=0)
 np.random.shuffle(dataset)
 np.unique(dataset)
@@ -63,7 +64,7 @@ while True:
     save = input("Salvare il modello? y/n > ")
     if save == 'y':
         model_name = input('Inserisci il nome >>> ')
-        model.save(f'models\\{model_name}.h5')
+        model.save(f'models' + sep + '{model_name}.h5')
         break
     elif save == 'n':
         break
