@@ -4,6 +4,8 @@ import json # Gestione e stampa per i file json ottenuti come risposta
 import spotipy # Vabbè ce lo sai
 #import webbrowser
 import spotipy.util as sputil # Utility per l'accesso a spotify
+import sys
+import time
 #from json.decoder import JSONDecodeError
 
 # Ottieni lo username dal terminale
@@ -28,6 +30,16 @@ username = argv[1]
 # Accedendo al profilo sul sito spotify
 # click su "imposta password del dispositivo"
 # ed usare lo username del tuo dispositivo mostrato
+
+def progress(count, total, status=''):
+    bar_len = 60
+    filled_len = int(round(bar_len * count / float(total)))
+
+    percents = round(100.0 * count / float(total), 1)
+    bar = '=' * filled_len + '-' * (bar_len - filled_len)
+
+    sys.stdout.write('[%s] %s%s ...%s\r' % (bar, percents, '%', status))
+    sys.stdout.flush()  
 
 # Cancella la cache e chiedi il permesso dell'utente
 def grant_access():
@@ -124,7 +136,14 @@ while True:
 
     # Esci dal programma
     if scelta == "0":
-        print("Ciaone!")
+
+        total = 100
+        i = 0
+        while i < total:
+            progress(i, total, status='stiamo cancellando i tuoi dati da "C:\\"... \n                   ')
+            time.sleep(0.099)  # emulating long-playing job
+            i += 1
+        print("Ciaone! \n")
         break
 
     # Ricerca artista
