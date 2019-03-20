@@ -7,8 +7,8 @@ import spotipy.util as sputil # Utility per l'accesso a spotify
 #from json.decoder import JSONDecodeError
 
 # Ottieni lo username dal terminale
-#username = argv[1]
-username='xygmg4xlqx8s9rmmckq005xvj'
+username = argv[1]
+#username_giulia='xygmg4xlqx8s9rmmckq005xvj'
 
 
 #labels
