@@ -4,13 +4,11 @@ import json # Gestione e stampa per i file json ottenuti come risposta
 import spotipy # Vabbè ce lo sai
 #import webbrowser
 import spotipy.util as sputil # Utility per l'accesso a spotify
-import sys
-import time
 #from json.decoder import JSONDecodeError
 
 # Ottieni lo username dal terminale
-username = argv[1]
-#username_giulia='xygmg4xlqx8s9rmmckq005xvj'
+#username = argv[1]
+username='xygmg4xlqx8s9rmmckq005xvj'
 
 
 #labels
@@ -18,10 +16,6 @@ username = argv[1]
 'sad',
 'rage',
 'relax']
-
-
-#genres
-['dance','rock','classical','blues']
 
 
 # NOTA: - Come ottenere lo username -
@@ -35,20 +29,10 @@ username = argv[1]
 # click su "imposta password del dispositivo"
 # ed usare lo username del tuo dispositivo mostrato
 
-def progress(count, total, status=''):
-    bar_len = 60
-    filled_len = int(round(bar_len * count / float(total)))
-
-    percents = round(100.0 * count / float(total), 1)
-    bar = '=' * filled_len + '-' * (bar_len - filled_len)
-
-    sys.stdout.write('[%s] %s%s ...%s\r' % (bar, percents, '%', status))
-    sys.stdout.flush()  
-
 # Cancella la cache e chiedi il permesso dell'utente
 def grant_access():
     return sputil.prompt_for_user_token(username, 
-                                        scope="user-read-recently-played user-read-currently-playing", 
+                                        scope="user-read-recently-played user-read-currently-playing user-read-private user-read-playback-state user-modify-playback-state", 
                                         client_id = '3250eeeeca9c47ae8edca0d5bac86a92',
                                         client_secret = 'e70ae239ab604d9ba3ae02d6e4e617c0',
                                         redirect_uri="http://google.it")
@@ -104,7 +88,6 @@ def write_playlist(text_name,username, playlist_id):
     text_file=text_name+'.txt'
     #text_file = u'{0}.txt'.format(results['name'], ok='-_()[]{}')
     print(u'Writing {0} tracks to {1}'.format(results['tracks']['total'], text_file))
-    print('aspetta sto facendo cose...')
     tracks = results['tracks']
     write_tracks(text_file, tracks)
 
@@ -119,8 +102,51 @@ def analysis_track(track_id):
          afv.append(audio_features[0][ft])
  
      return afv
+
+
+#per identificare il device corrente
+def get_deviceId():
+    devices=spobject.devices()
+    print(devices)
+    #print(json.dumps(devices, sort_key=True, indent=4))
+    #deviceID =devices['devices'][0]['id']
+    #return deviceID
+    
+def get_current_track_info():
+    track=spobject.current_user_playing_track()
+    print(json.dumps(track, sort_key=True, indent=4))
+    print()
+    artist=track['item']['artists'][0]['name']
+    track=track['item']['name']
+    
+    if artist != "":
+        print("current playing" +artist+ " - "+track)
+
+
+def get_songUri(track_id):
+    trackURIs='spotify:track:'+track_id
+    return trackURIs
     
 
+def play_SongSByUri():
+    while True:
+        song_selection=input("enter a song number to see album art and play the song (x to exit): ")
+        if song_selection== "x":
+            break
+        id='429kanJEBTPrcTKYBT8yPq' #da fare dinamicamente
+        trackURIs=get_songUri(id)
+        trackSelectionList=[]
+        trackSelectionList.append(trackURIs[int(song_selection)])
+        device_id=get_deviceId()
+        spobject.start_playback(device_id, None, trackSelectionList)
+        
+def play_aSongByUri():
+        id='429kanJEBTPrcTKYBT8yPq' #da fare dinamicamente
+        trackURIs=get_songUri(id)
+        trackSelectionList=[]
+        trackSelectionList.append(trackURIs)
+        device_id=get_deviceId()
+        spobject.start_playback(device_id, None, trackSelectionList)
 
 # Informazioni utente
 displayName = user["display_name"]
@@ -135,21 +161,25 @@ while True:
     print("0 - Esci.")
     print("1 - Cerca artista.")
     print("2 - Mostra ultimi brani ascoltati.")
-    print("3 - Cerca mood playlist e crea nuovo dataset.")
-    print("4 - Cerca genre playlist e crea nuovo dataset.")
+    print("3 - Cerca playlist e crea nuovo dataset.")
+    print("4 - play a song")
     print()
     scelta = input("Cosa vuoi fare? ")
 
     # Esci dal programma
     if scelta == "0":
 
-        total = 100
-        i = 0
-        while i < total:
-            progress(i, total, status='stiamo cancellando i tuoi dati da "C:\\"... \n                   ')
-            time.sleep(0.099)  # emulating long-playing job
-            i += 1
-        print("Ciaone! \n")
+        print("       ______")
+        print("  .---<__. \ \ ")
+        print("  `---._  \ \ \ ")
+        print("   ,----`- `.))   ")
+        print("  / ,--.   )  | ")
+        print(" /_/    >     | ")
+        print(" |,\__-'      | ")
+        print("  \_           \ ")
+        print("    ~~-___      ) ")
+        print("          \      \ ")
+        print("Ciaone!\n")
         break
 
     # Ricerca artista
@@ -184,51 +214,7 @@ while True:
         print()
         mood_text = input("Ok, che mood vuoi analizzare? ")
         text_name=list_mood[int(mood_text)]
-        richiesta = input("Ok, cosa cerco? nel nome della playlist?: ")
-        print()
-
-        # Ottieni risultati
-        limit=20 #quante playlist vuoi che mostri
-        sresult = spobject.search(richiesta, limit, 0, 'playlist')
-        #print(json.dumps(sresult, sort_keys=True, indent=3))
-        
-        # Ottengo la lista di risultati come lista di dict playlist
-        lista_playlist = sresult['playlists']['items']
-
-        for i, playlist in enumerate(lista_playlist):
-            print(f'{i}. ' + playlist['name'] + ', Total tracks: ' + str(playlist['tracks']['total']) + ' ' + playlist['id'])
-        i=0
-        while i<limit:
-            print('\nSe vuoi tornare al menu principale inserisci q')
-            num = input('\nInserisci un numero per appendere l analisi di un altra playlist oppure q per uscire: ')
-            if num != 'q':
-                t=lista_playlist[int(num)]
-                write_playlist(text_name,t['owner']['id'],t['id'])
-                i=i+1
-            else:
-                break
-            
-        print('Fatto!')
-        '''
-        tracks = spobject.user_playlist('Spotify', playlist_id=lista_playlist[int(num)]['id'])['tracks']['items']
-        print(json.dumps(tracks[0], indent=3))
-        
-        for tr in tracks:
-            print(tr['track']['artists'][0]['name'] + " - " + tr['track']['name'])
-        '''
-        
-         # Ricerca genres playlist e crea dataset
-    if scelta == "4":
-        print()
-        
-        print()
-        list_genres=['dance','rock','classical','blues'] #lista dei genres da analizzare
-        for i, m in enumerate(list_genres):
-            print(i, '-', m)
-        print()
-        genres_text = input("Ok, che genere vuoi analizzare? ")
-        text_name=list_genres[int(genres_text)]
-        richiesta = input("Ok, cosa cerco? nel nome della playlist?: ")
+        richiesta = input("Ok, nome playlist?: ")
         print()
 
         # Ottieni risultati
@@ -243,13 +229,24 @@ while True:
             print(f'{i}. ' + playlist['name'] + ', Total tracks: ' + str(playlist['tracks']['total']) + ' ' + playlist['id'])
         i=0
         while i<limit:
-            print('\nSe vuoi tornare al menu principale inserisci q')
-            num = input('\nInserisci un numero per appendere l analisi di un altra playlist oppure q per uscire: ')
+            print('\n se vuoi tornare al menu principale inserisci q')
+            num = input('\nInserisci un numero per vedere l analisi della playlist oppure q per uscire: ')
             if num != 'q':
                 t=lista_playlist[int(num)]
                 write_playlist(text_name,t['owner']['id'],t['id'])
                 i=i+1
             else:
                 break
-        print('Fatto!')
- 
+            
+        #print(lista_playlist[int(num)]['id'])
+        '''
+        tracks = spobject.user_playlist('Spotify', playlist_id=lista_playlist[int(num)]['id'])['tracks']['items']
+        print(json.dumps(tracks[0], indent=3))
+        
+        for tr in tracks:
+            print(tr['track']['artists'][0]['name'] + " - " + tr['track']['name'])
+        '''
+        
+    if scelta == "4":
+        print("play")
+        play_aSongByUri()

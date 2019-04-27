@@ -1,3 +1,9 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Wed Apr 17 23:21:01 2019
+
+"""
+
 import keras
 from keras.models import Sequential
 from keras.layers import Dense, Dropout, Activation
@@ -9,9 +15,14 @@ import readmatrix as rdmt
 # Carica i dati e crea il dataset
 import numpy as np
 # Lettura da file a matrice
-mat_happy = rdmt.to_matrix('data' + sep + 'happyness.txt', 0, 600)
-mat_sadness = rdmt.to_matrix('data' + sep + 'sadness.txt', 1, 600)
-dataset = np.append(mat_sadness, mat_happy, axis=0)
+mat_dance = rdmt.to_matrix('data' + sep + 'dance.txt', 0, 600)
+mat_rock = rdmt.to_matrix('data' + sep + 'rock.txt', 1, 600)
+mat_classical= rdmt.to_matrix('data' + sep + 'classical.txt', 2, 600)
+mat_blues = rdmt.to_matrix('data' + sep + 'blues.txt', 3, 600)
+dataset1 = np.append(mat_rock, mat_dance, axis=0)
+dataset2=np.append(mat_classical, mat_blues, axis=0)
+dataset=np.append(dataset1,dataset2, axis=0)
+#FIN QUI
 np.random.shuffle(dataset)
 np.unique(dataset)
 # Dimensioni test set (20% dataset)
@@ -32,7 +43,8 @@ model.add(Dense(16, activation='relu'))
 #model.add(Dropout(0.3))
 model.add(Dense(8, activation='relu'))
 #model.add(Dropout(0.3))
-model.add(Dense(2, activation='softmax'))
+model.add(Dense(4, activation='softmax'))
+#model.add(Dense(2, activation='softmax'))
 
 model.summary()
 
