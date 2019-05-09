@@ -15,10 +15,10 @@ import readmatrix as rdmt
 # Carica i dati e crea il dataset
 import numpy as np
 # Lettura da file a matrice
-mat_dance = rdmt.to_matrix('data' + sep + 'dance.txt', 0, 600)
-mat_rock = rdmt.to_matrix('data' + sep + 'rock.txt', 1, 600)
-mat_classical= rdmt.to_matrix('data' + sep + 'classical.txt', 2, 600)
-mat_blues = rdmt.to_matrix('data' + sep + 'blues.txt', 3, 600)
+mat_dance = rdmt.to_matrix('data' + sep + 'dance.txt', 0, 400)
+mat_rock = rdmt.to_matrix('data' + sep + 'rock.txt', 1, 400)
+mat_classical= rdmt.to_matrix('data' + sep + 'classical.txt', 2, 400)
+mat_blues = rdmt.to_matrix('data' + sep + 'blues.txt', 3, 400)
 dataset1 = np.append(mat_rock, mat_dance, axis=0)
 dataset2=np.append(mat_classical, mat_blues, axis=0)
 dataset=np.append(dataset1,dataset2, axis=0)
@@ -48,7 +48,7 @@ model.add(Dense(4, activation='softmax'))
 
 model.summary()
 
-sgd = SGD(lr=0.5)
+#sgd = SGD(lr=0.5)
 model.compile(loss='categorical_crossentropy',
               optimizer='adam',
               metrics=['accuracy'])
@@ -60,7 +60,7 @@ x_train = normalize(training[...,:-1], axis=1, order=1)
 y_train = to_categorical(training[...,-1])
 
 model.fit(x_train, y_train,
-          epochs=2000,
+          epochs=3500,
           verbose=1,
           batch_size=10)
 
@@ -75,7 +75,7 @@ print()
 while True:
     save = input("Salvare il modello? y/n > ")
     if save == 'y':
-        model_name = input('Inserisci il nome >>> ')
+        model_name = input("Inserisci il nome >>> ")
         model.save(f'models' + sep + '{model_name}.h5')
         break
     elif save == 'n':

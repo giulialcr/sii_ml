@@ -1,4 +1,5 @@
 import keras
+from keras.models import load_model
 from keras.models import Sequential
 from keras.layers import Dense, Dropout, Activation
 from keras.optimizers import SGD
@@ -9,12 +10,12 @@ import readmatrix as rdmt
 # Carica i dati e crea il dataset
 import numpy as np
 # Lettura da file a matrice
-mat_happy = rdmt.to_matrix('data' + sep + 'happy.txt', 0, 800)
-mat_sadness = rdmt.to_matrix('data' + sep + 'sad.txt', 1, 800)
-mat_rage= rdmt.to_matrix('data' + sep + 'rage.txt', 2, 800)
-mat_relax = rdmt.to_matrix('data' + sep + 'relax.txt', 3, 800)
-dataset1 = np.append(mat_sadness, mat_happy, axis=0)
-dataset2=np.append(mat_rage, mat_relax, axis=0)
+mat_happy = rdmt.to_matrix('data' + sep + 'happy.txt', 0, 400)
+mat_rage= rdmt.to_matrix('data' + sep + 'rage.txt', 1, 400)
+mat_relax = rdmt.to_matrix('data' + sep + 'relax.txt', 2, 400)
+mat_sadness = rdmt.to_matrix('data' + sep + 'sad.txt', 3, 400)
+dataset1 = np.append(mat_rage, mat_happy, axis=0)
+dataset2=np.append(mat_sadness, mat_relax, axis=0)
 dataset=np.append(dataset1,dataset2, axis=0)
 #FIN QUI
 np.random.shuffle(dataset)
@@ -31,20 +32,14 @@ test = dataset[-tsize:]
 # Model
 model = Sequential()
 
+
 model.add(Dense(32, activation='relu', input_dim=10))
 #model.add(Dropout(0.3))
 model.add(Dense(16, activation='relu'))
-#model.add(Dense(16, activation='relu'))
-model.add(Dense(16, activation='relu'))
 #model.add(Dropout(0.3))
-model.add(Dense(8, activation='softmax'))
 model.add(Dense(8, activation='relu'))
 #model.add(Dropout(0.3))
-model.add(Dense(4, activation='relu'))
-#model.add(Dense(4, activation='softmax'))
-model.add(Dense(4, activation='relu'))
-
-
+model.add(Dense(4, activation='softmax'))
 
 model.summary()
 
@@ -61,7 +56,7 @@ x_train = normalize(training[...,:-1], axis=1, order=1)
 y_train = to_categorical(training[...,-1])
 
 model.fit(x_train, y_train,
-          epochs=2000,
+          epochs=3500,
           verbose=1,
           batch_size=10)
 
@@ -79,6 +74,7 @@ while True:
     if save == 'y':
         model_name = input('Inserisci il nome >>> ')
         model.save(f'models' + sep + '{model_name}.h5')
+        #model.save('moodModel.h5')
         break
     elif save == 'n':
         break

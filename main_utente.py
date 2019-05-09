@@ -34,7 +34,7 @@ username = argv[1]
 # Accedendo al profilo sul sito spotify
 # click su "imposta password del dispositivo"
 # ed usare lo username del tuo dispositivo mostrato
-
+'''
 def progress(count, total, status=''):
     bar_len = 60
     filled_len = int(round(bar_len * count / float(total)))
@@ -44,7 +44,7 @@ def progress(count, total, status=''):
 
     sys.stdout.write('[%s] %s%s ...%s\r' % (bar, percents, '%', status))
     sys.stdout.flush()  
-
+'''
 # Cancella la cache e chiedi il permesso dell'utente
 def grant_access():
     return sputil.prompt_for_user_token(username, 
@@ -142,13 +142,14 @@ while True:
 
     # Esci dal programma
     if scelta == "0":
-
+        '''
         total = 100
         i = 0
         while i < total:
             progress(i, total, status='stiamo cancellando i tuoi dati da "C:\\"... \n                   ')
             time.sleep(0.099)  # emulating long-playing job
             i += 1
+        '''
         print("Ciaone! \n")
         break
 
@@ -232,7 +233,7 @@ while True:
         print()
 
         # Ottieni risultati
-        limit=10 #quante paylist vuoi che mostri
+        limit=20 #quante paylist vuoi che mostri
         sresult = spobject.search(richiesta, limit, 0, 'playlist')
         #print(json.dumps(sresult, sort_keys=True, indent=3))
         
