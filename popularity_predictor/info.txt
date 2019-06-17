@@ -1,0 +1,2 @@
+Dataset da Kaggle
+https://www.kaggle.com/zaheenhamidani/ultimate-spotify-tracks-db#SpotifyFeatures.csv
